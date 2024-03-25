@@ -20,7 +20,7 @@ module "firewall" {
 
 
 module "network" {
-  source = "git::https://github.com/nexient-llc/tf-azurerm-module_collection-virtual_network.git?ref=0.2.1"
+  source = "git::https://github.com/launchbynttdata/tf-azurerm-module_collection-virtual_network.git?ref=1.0.0"
 
   network_map = local.network_map
 
@@ -28,7 +28,7 @@ module "network" {
 }
 
 module "resource_group" {
-  source = "git::https://github.com/nexient-llc/tf-azurerm-module_primitive-resource_group.git?ref=0.2.0"
+  source = "git::https://github.com/launchbynttdata/tf-azurerm-module_primitive-resource_group.git?ref=1.0.0"
 
   name     = local.resource_group
   location = var.location
@@ -39,7 +39,7 @@ module "resource_group" {
 
 # This module generates the resource-name of resources based on resource_type, naming_prefix, env etc.
 module "resource_names" {
-  source = "git::https://github.com/nexient-llc/tf-module-resource_name.git?ref=1.1.0"
+  source = "git::https://github.com/launchbynttdata/tf-launch-module_library-resource_name.git?ref=1.0.0"
 
   for_each = var.resource_names_map
 

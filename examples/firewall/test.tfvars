@@ -42,4 +42,5 @@ network_rule_collections = [{
 //variables for network module
 address_space   = ["10.0.0.0/16"]
 subnet_prefixes = []
+subnet_names    = []
 use_for_each    = true

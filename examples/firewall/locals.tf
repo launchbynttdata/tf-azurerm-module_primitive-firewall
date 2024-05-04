@@ -62,7 +62,7 @@ locals {
       use_for_each        = var.use_for_each
       resource_group_name = local.resource_group
       vnet_location       = var.location
-      subnet_names        = []
+      subnet_names        = var.subnet_names
       location            = var.location
       vnet_name           = local.virtual_network_name
     }

@@ -229,6 +229,11 @@ variable "subnet_prefixes" {
   type        = list(string)
 }
 
+variable "subnet_names" {
+  description = "The names to use for subnets."
+  type        = list(string)
+}
+
 variable "bgp_community" {
   description = "The BGP community to use for the virtual network."
   type        = string

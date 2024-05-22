@@ -24,6 +24,8 @@ module "firewall" {
     public_ip_address_id = module.public_ip.id
   }]
 
+  tags = local.tags
+
   depends_on = [module.resource_group]
 }
 
@@ -37,6 +39,8 @@ module "public_ip" {
   location            = var.location
   allocation_method   = "Static"
   sku                 = "Standard"
+
+  tags = local.tags
 
   depends_on = [module.resource_group]
 }
@@ -54,6 +58,8 @@ module "network" {
   subnet_names    = ["AzureFirewallSubnet"]
   subnet_prefixes = ["172.16.0.0/26"]
 
+  tags = local.tags
+
   depends_on = [module.resource_group]
 }
 
@@ -63,6 +69,8 @@ module "resource_group" {
 
   name     = local.resource_group_name
   location = var.location
+
+  tags = local.tags
 }
 
 module "resource_names" {

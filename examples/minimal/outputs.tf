@@ -10,23 +10,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-output "id" {
-  value = azurerm_firewall.firewall.id
+output "firewall_id" {
+  value = module.firewall.id
 }
 
-
-output "firewall_policy_id" {
-  value = azurerm_firewall.firewall.firewall_policy_id
+output "firewall_name" {
+  value = local.firewall_name
 }
 
-output "dns_servers" {
-  value = azurerm_firewall.firewall.dns_servers
-}
-
-output "ip_configuration" {
-  value = azurerm_firewall.firewall.ip_configuration
-}
-
-output "management_ip_configuration" {
-  value = azurerm_firewall.firewall.management_ip_configuration
+output "resource_group_name" {
+  value = local.resource_group_name
 }

@@ -5,7 +5,7 @@
 
 ## Overview
 
-This module is used to deploy one or more azure firewall service instances. Application rule collection, Network rule collection, Application rules and Network rules can be created using this module as well. It is possible to create NAT collection along with NAT rules using the public module but DNAT type of rules need a public IP address of firewall as destination address, which is not available until firewall is deployed. Hence the feature of creating NAT collections and NAT rules is not provided vis this custom collection module.
+Deploys a single Azure Firewall resource.
 
 ## Pre-Commit hooks
 
@@ -113,31 +113,46 @@ If `make check` target is successful, developer is good to commit the code to pr
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 3.104.2 |
 
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_firewall"></a> [firewall](#module\_firewall) | claranet/firewall/azurerm | 6.5.0 |
+No modules.
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [azurerm_firewall.firewall](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_firewall_map"></a> [firewall\_map](#input\_firewall\_map) | Map of azure firewalls where name is key, and value is object containing attributes to create a azure firewall | <pre>map(object({<br>    client_name           = string<br>    environment           = string<br>    location              = string<br>    location_short        = string<br>    logs_destinations_ids = list(string)<br>    resource_group_name   = string<br>    stack                 = string<br>    subnet_cidr           = optional(string)<br>    virtual_network_name  = string<br>    firewall_policy_id    = optional(string)<br>    additional_public_ips = optional(list(object(<br>      {<br>        name                 = string,<br>        public_ip_address_id = string<br>    })))<br>    application_rule_collections = optional(list(object(<br>      {<br>        name     = string,<br>        priority = number,<br>        action   = string,<br>        rules = list(object(<br>          { name             = string,<br>            source_addresses = list(string),<br>            source_ip_groups = list(string),<br>            target_fqdns     = list(string),<br>            protocols = list(object(<br>              { port = string,<br>            type = string }))<br>          }<br>        ))<br>    })))<br>    custom_diagnostic_settings_name = optional(string)<br>    custom_firewall_name            = optional(string)<br>    dns_servers                     = optional(string)<br>    extra_tags                      = optional(map(string))<br>    firewall_private_ip_ranges      = optional(list(string))<br>    ip_configuration_name           = optional(string)<br>    network_rule_collections = optional(list(object({<br>      name     = string,<br>      priority = number,<br>      action   = string,<br>      rules = list(object({<br>        name                  = string,<br>        source_addresses      = list(string),<br>        source_ip_groups      = optional(list(string)),<br>        destination_ports     = list(string),<br>        destination_addresses = list(string),<br>        destination_ip_groups = optional(list(string)),<br>        destination_fqdns     = optional(list(string)),<br>        protocols             = list(string)<br>      }))<br>    })))<br>    public_ip_custom_name = optional(string)<br>    public_ip_zones       = optional(list(number))<br>    sku_tier              = optional(string)<br>    zones                 = optional(list(number))<br>  }))</pre> | `{}` | no |
+| <a name="input_name"></a> [name](#input\_name) | Specifies the name of the Firewall. Changing this forces a new resource to be created. | `string` | n/a | yes |
+| <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of the resource group in which to create the resource. Changing this forces a new resource to be created. | `string` | n/a | yes |
+| <a name="input_location"></a> [location](#input\_location) | Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created. | `string` | n/a | yes |
+| <a name="input_sku_name"></a> [sku\_name](#input\_sku\_name) | SKU name of the Firewall. Possible values are `AZFW_Hub` and `AZFW_VNet`, defaults to `AZFW_VNet`. Changing this forces a new resource to be created. | `string` | `"AZFW_VNet"` | no |
+| <a name="input_sku_tier"></a> [sku\_tier](#input\_sku\_tier) | SKU tier of the Firewall. Possible values are `Basic`, `Standard`, and `Premium`. | `string` | n/a | yes |
+| <a name="input_firewall_policy_id"></a> [firewall\_policy\_id](#input\_firewall\_policy\_id) | The ID of the Firewall Policy applied to this Firewall. | `string` | `null` | no |
+| <a name="input_ip_configuration"></a> [ip\_configuration](#input\_ip\_configuration) | An IP configuration block to configure public IPs and subnets associated with this firewall. The Subnet used for the Firewall must have the name `AzureFirewallSubnet` and the subnet mask must be at least a /26. Any Public IPs must have a Static allocation and Standard SKU. One and only one ip\_configuration object may contain a `subnet_id`. A public ip address is required unless a `management_ip_configuration` block is specified. | <pre>list(object({<br>    name                 = string<br>    subnet_id            = string<br>    public_ip_address_id = string<br>  }))</pre> | `null` | no |
+| <a name="input_dns_servers"></a> [dns\_servers](#input\_dns\_servers) | A list of DNS servers that the Azure Firewall will direct DNS traffic to the for name resolution. | `list(string)` | `null` | no |
+| <a name="input_private_ip_ranges"></a> [private\_ip\_ranges](#input\_private\_ip\_ranges) | An optional list of SNAT private CIDR IP ranges, or the special string `IANAPrivateRanges`, which indicates Azure Firewall does not SNAT when the destination IP address is a private range per IANA RFC 1918. | `list(string)` | `null` | no |
+| <a name="input_management_ip_configuration"></a> [management\_ip\_configuration](#input\_management\_ip\_configuration) | An IP Configuration block to configure force-tunnelling of traffic to be performed by the firewall. The Management Subnet used for the Firewall must have the name `AzureFirewallManagementSubnet` and the subnet mask must be at least a /26. The Public IP must have a `Static` allocation and `Standard` SKU. Adding or removing this block or changing the `subnet_id` in an existing block forces a new resource to be created. Changing this forces a new resource to be created. | <pre>object({<br>    name                 = string<br>    subnet_id            = string<br>    public_ip_address_id = string<br>  })</pre> | `null` | no |
+| <a name="input_threat_intel_mode"></a> [threat\_intel\_mode](#input\_threat\_intel\_mode) | The operation mode for threat intelligence-based filtering. Possible values are: `Off`, `Alert` and `Deny`. Defaults to `Alert`. | `string` | `"Alert"` | no |
+| <a name="input_virtual_hub"></a> [virtual\_hub](#input\_virtual\_hub) | Configuration to use a firewall with a Microsoft-managed Virtual Hub. | <pre>object({<br>    virtual_hub_id  = string<br>    public_ip_count = optional(number, 1)<br>  })</pre> | `null` | no |
+| <a name="input_zones"></a> [zones](#input\_zones) | Specifies a list of Availability Zones in which this Azure Firewall should be located. Changing this forces a new Azure Firewall to be created. | `list(string)` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource. | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_firewall_ids"></a> [firewall\_ids](#output\_firewall\_ids) | Firewall generated ids |
-| <a name="output_firewall_names"></a> [firewall\_names](#output\_firewall\_names) | Firewall names |
-| <a name="output_private_ip_addresses"></a> [private\_ip\_addresses](#output\_private\_ip\_addresses) | Firewall private IPs |
-| <a name="output_public_ip_addresses"></a> [public\_ip\_addresses](#output\_public\_ip\_addresses) | Firewall public IPs |
-| <a name="output_subnet_ids"></a> [subnet\_ids](#output\_subnet\_ids) | IDs of the subnet attached to the firewall |
+| <a name="output_id"></a> [id](#output\_id) | n/a |
+| <a name="output_firewall_policy_id"></a> [firewall\_policy\_id](#output\_firewall\_policy\_id) | n/a |
+| <a name="output_dns_servers"></a> [dns\_servers](#output\_dns\_servers) | n/a |
+| <a name="output_ip_configuration"></a> [ip\_configuration](#output\_ip\_configuration) | n/a |
+| <a name="output_management_ip_configuration"></a> [management\_ip\_configuration](#output\_management\_ip\_configuration) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

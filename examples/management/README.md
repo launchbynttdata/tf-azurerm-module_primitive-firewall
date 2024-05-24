@@ -48,4 +48,5 @@ No resources.
 | <a name="output_firewall_name"></a> [firewall\_name](#output\_firewall\_name) | n/a |
 | <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name) | n/a |
 | <a name="output_firewall_ip_configuration"></a> [firewall\_ip\_configuration](#output\_firewall\_ip\_configuration) | n/a |
+| <a name="output_firewall_management_ip_configuration"></a> [firewall\_management\_ip\_configuration](#output\_firewall\_management\_ip\_configuration) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

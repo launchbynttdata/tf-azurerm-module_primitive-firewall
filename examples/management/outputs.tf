@@ -25,3 +25,7 @@ output "resource_group_name" {
 output "firewall_ip_configuration" {
   value = module.firewall.ip_configuration
 }
+
+output "firewall_management_ip_configuration" {
+  value = module.firewall.management_ip_configuration
+}

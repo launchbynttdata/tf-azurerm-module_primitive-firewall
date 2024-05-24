@@ -9,19 +9,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+locals {
+  default_tags = {
+    provisioner = "terraform"
+  }
 
-output "firewall_id" {
-  value = module.firewall.id
-}
+  resource_group_name  = module.resource_names["resource_group"].minimal_random_suffix
+  firewall_name        = module.resource_names["firewall"].minimal_random_suffix
+  virtual_network_name = module.resource_names["virtual_network"].minimal_random_suffix
+  public_ip_name       = module.resource_names["public_ip"].minimal_random_suffix
 
-output "firewall_name" {
-  value = local.firewall_name
-}
-
-output "resource_group_name" {
-  value = local.resource_group_name
-}
-
-output "firewall_ip_configuration" {
-  value = module.firewall.ip_configuration
+  tags = merge(local.default_tags, var.tags)
 }

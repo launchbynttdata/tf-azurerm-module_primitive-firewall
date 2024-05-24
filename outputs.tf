@@ -14,7 +14,6 @@ output "id" {
   value = azurerm_firewall.firewall.id
 }
 
-
 output "firewall_policy_id" {
   value = azurerm_firewall.firewall.firewall_policy_id
 }
@@ -28,5 +27,5 @@ output "ip_configuration" {
 }
 
 output "management_ip_configuration" {
-  value = azurerm_firewall.firewall.management_ip_configuration
+  value = var.management_ip_configuration
 }

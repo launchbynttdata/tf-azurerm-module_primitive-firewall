@@ -10,18 +10,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-output "firewall_id" {
-  value = module.firewall.id
-}
+terraform {
+  required_version = "<= 1.5.5"
 
-output "firewall_name" {
-  value = local.firewall_name
-}
-
-output "resource_group_name" {
-  value = local.resource_group_name
-}
-
-output "firewall_ip_configuration" {
-  value = module.firewall.ip_configuration
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.77.0"
+    }
+  }
 }

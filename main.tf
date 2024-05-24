@@ -34,12 +34,12 @@ resource "azurerm_firewall" "firewall" {
   }
 
   dynamic "management_ip_configuration" {
-    for_each = var.management_ip_configuration == null ? [] : [var.management_ip_configuration]
+    for_each = var.management_ip_configuration == null ? [] : [1]
 
     content {
-      name                 = management_ip_configuration.name
-      public_ip_address_id = management_ip_configuration.public_ip_address_id
-      subnet_id            = management_ip_configuration.subnet_id
+      name                 = var.management_ip_configuration.name
+      public_ip_address_id = var.management_ip_configuration.public_ip_address_id
+      subnet_id            = var.management_ip_configuration.subnet_id
     }
   }
 

@@ -10,22 +10,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-output "id" {
-  value = azurerm_firewall.firewall.id
-}
+terraform {
+  required_version = "<= 1.5.5"
 
-output "firewall_policy_id" {
-  value = azurerm_firewall.firewall.firewall_policy_id
-}
-
-output "dns_servers" {
-  value = azurerm_firewall.firewall.dns_servers
-}
-
-output "ip_configuration" {
-  value = azurerm_firewall.firewall.ip_configuration
-}
-
-output "management_ip_configuration" {
-  value = var.management_ip_configuration
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.77.0"
+    }
+  }
 }

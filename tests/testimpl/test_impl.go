@@ -3,7 +3,6 @@ package common
 import (
 	"context"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
@@ -30,37 +29,19 @@ func TestFirewall(t *testing.T, ctx types.TestContext) {
 		t.Fatalf("Unable to get clientFactory: %e\n", err)
 	}
 
-	// Get firewalls client
 	firewallsClient := clientFactory.NewAzureFirewallsClient()
 
-	// Get firewall IDs
-	firewallIds := terraform.OutputMap(t, ctx.TerratestTerraformOptions(), "firewall_ids")
+	t.Run("doesFirewallExist", func(t *testing.T) {
+		firewallId := terraform.Output(t, ctx.TerratestTerraformOptions(), "firewall_id")
+		firewallName := terraform.Output(t, ctx.TerratestTerraformOptions(), "firewall_name")
+		resourceGroupName := terraform.Output(t, ctx.TerratestTerraformOptions(), "resource_group_name")
 
-	// Run tests for each firewall ID
-	for range firewallIds {
-		t.Run("doesFirewallExist", func(t *testing.T) {
-			// Get resource group name
-			resourceGroupName := terraform.Output(t, ctx.TerratestTerraformOptions(), "resource_group_name")
+		firewall, err := firewallsClient.Get(context.Background(), resourceGroupName, firewallName, nil)
+		if err != nil {
+			t.Fatalf("Error getting firewall: %v", err)
+		}
 
-			// Get firewall names
-			firewallNames := terraform.OutputMap(t, ctx.TerratestTerraformOptions(), "firewall_names")
-
-			for _, firewallName := range firewallNames {
-				inputFirewallName := strings.Trim(firewallName, "\"[]")
-				t.Logf("Checking firewall: %s", inputFirewallName)
-
-				firewallInstance, err := firewallsClient.Get(context.Background(), resourceGroupName, inputFirewallName, nil)
-				if err != nil {
-					t.Fatalf("Error getting firewall: %v", err)
-				}
-				t.Logf("Firewall Name: %s", *firewallInstance.Name)
-				if firewallInstance.Name == nil {
-					t.Fatalf("Firewall does not exist")
-				}
-				assert.Equal(t, strings.ToLower(inputFirewallName), strings.ToLower(*firewallInstance.Name))
-				//assert.NotEmpty(t, (*firewallInstance.AzureFirewall.))
-			}
-
-		})
-	}
+		assert.Equal(t, *firewall.ID, firewallId, "Expected ID did not match actual ID!")
+		assert.Equal(t, *firewall.Name, firewallName, "Expected Name did not match actual Name!")
+	})
 }

@@ -9,23 +9,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+locals {
+  default_tags = {
+    provisioner = "terraform"
+  }
 
-output "id" {
-  value = azurerm_firewall.firewall.id
-}
+  resource_group_name  = module.resource_names["resource_group"].minimal_random_suffix
+  firewall_name        = module.resource_names["firewall"].minimal_random_suffix
+  virtual_network_name = module.resource_names["virtual_network"].minimal_random_suffix
+  public_ip_name       = module.resource_names["public_ip"].minimal_random_suffix
 
-output "firewall_policy_id" {
-  value = azurerm_firewall.firewall.firewall_policy_id
-}
-
-output "dns_servers" {
-  value = azurerm_firewall.firewall.dns_servers
-}
-
-output "ip_configuration" {
-  value = azurerm_firewall.firewall.ip_configuration
-}
-
-output "management_ip_configuration" {
-  value = var.management_ip_configuration
+  tags = merge(local.default_tags, var.tags)
 }

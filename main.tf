@@ -18,6 +18,7 @@ resource "azurerm_firewall" "firewall" {
   sku_tier            = var.sku_tier
   firewall_policy_id  = var.firewall_policy_id
   dns_servers         = var.dns_servers
+  dns_proxy_enabled   = var.dns_proxy_enabled
   private_ip_ranges   = var.private_ip_ranges
   threat_intel_mode   = var.threat_intel_mode
   zones               = var.zones

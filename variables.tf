@@ -62,6 +62,12 @@ variable "ip_configuration" {
   default = null
 }
 
+variable "dns_proxy_enabled" {
+  description = "Whether DNS proxy is enabled. It will forward DNS requests to the DNS servers when set to `true`. It will be set to `true` if `dns_servers` was provided with a non-empty list."
+  type        = bool
+  default     = false
+}
+
 variable "dns_servers" {
   description = "A list of DNS servers that the Azure Firewall will direct DNS traffic to the for name resolution."
   type        = list(string)

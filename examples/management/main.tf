@@ -36,7 +36,7 @@ module "firewall" {
 
 
 module "public_ip" {
-  source  = "d2lqlh14iel5k2.cloudfront.net/module_primitive/public_ip/azurerm"
+  source  = "terraform.registry.launch.nttdata.com/module_primitive/public_ip/azurerm"
   version = "~> 1.0"
 
   name                = local.public_ip_name
@@ -51,7 +51,7 @@ module "public_ip" {
 }
 
 module "network" {
-  source  = "d2lqlh14iel5k2.cloudfront.net/module_primitive/virtual_network/azurerm"
+  source  = "terraform.registry.launch.nttdata.com/module_primitive/virtual_network/azurerm"
   version = "~> 2.0"
 
   resource_group_name = local.resource_group_name
@@ -69,7 +69,7 @@ module "network" {
 }
 
 module "resource_group" {
-  source  = "d2lqlh14iel5k2.cloudfront.net/module_primitive/resource_group/azurerm"
+  source  = "terraform.registry.launch.nttdata.com/module_primitive/resource_group/azurerm"
   version = "~> 1.0"
 
   name     = local.resource_group_name
@@ -79,7 +79,7 @@ module "resource_group" {
 }
 
 module "resource_names" {
-  source  = "d2lqlh14iel5k2.cloudfront.net/module_library/resource_name/launch"
+  source  = "terraform.registry.launch.nttdata.com/module_library/resource_name/launch"
   version = "~> 1.0"
 
   for_each = var.resource_names_map

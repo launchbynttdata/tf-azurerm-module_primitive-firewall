@@ -37,7 +37,7 @@ module "firewall" {
 
 module "public_ip" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/public_ip/azurerm"
-  version = "~> 1.0"
+  version = "~> 1.1"
 
   name                = local.public_ip_name
   resource_group_name = local.resource_group_name
@@ -70,7 +70,7 @@ module "network" {
 
 module "resource_group" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/resource_group/azurerm"
-  version = "~> 1.0"
+  version = "~> 1.2"
 
   name     = local.resource_group_name
   location = var.location

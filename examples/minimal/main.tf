@@ -20,7 +20,7 @@ module "firewall" {
   sku_tier = "Standard"
   ip_configuration = [{
     name                 = "Default"
-    subnet_id            = module.network.vnet_subnets_name_id["AzureFirewallSubnet"]
+    subnet_id            = module.network.subnet_name_id_map["AzureFirewallSubnet"]
     public_ip_address_id = module.public_ip.id
   }]
 
@@ -32,7 +32,7 @@ module "firewall" {
 
 module "public_ip" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/public_ip/azurerm"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   name                = local.public_ip_name
   resource_group_name = local.resource_group_name
@@ -47,16 +47,16 @@ module "public_ip" {
 
 module "network" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/virtual_network/azurerm"
-  version = "~> 2.0"
+  version = "~> 3.2"
 
   resource_group_name = local.resource_group_name
-  use_for_each        = true
+  vnet_name           = local.virtual_network_name
+  vnet_location       = var.location
+  address_space       = ["172.16.0.0/16"]
 
-  vnet_name       = local.virtual_network_name
-  vnet_location   = var.location
-  address_space   = ["172.16.0.0/16"]
-  subnet_names    = ["AzureFirewallSubnet"]
-  subnet_prefixes = ["172.16.0.0/26"]
+  subnets = {
+    AzureFirewallSubnet = { prefix = "172.16.0.0/26" }
+  }
 
   tags = local.tags
 
@@ -75,7 +75,7 @@ module "resource_group" {
 
 module "resource_names" {
   source  = "terraform.registry.launch.nttdata.com/module_library/resource_name/launch"
-  version = "~> 2.0"
+  version = "~> 2.4"
 
   for_each = var.resource_names_map
 

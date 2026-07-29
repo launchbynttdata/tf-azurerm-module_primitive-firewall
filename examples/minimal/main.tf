@@ -14,7 +14,7 @@ module "firewall" {
   source = "../.."
 
   name                = local.firewall_name
-  resource_group_name = local.resource_group_name
+  resource_group_name = module.resource_group.name
 
   location = var.location
   sku_tier = "Standard"
@@ -26,7 +26,7 @@ module "firewall" {
 
   tags = local.tags
 
-  depends_on = [module.resource_group]
+  depends_on = [module.resource_group, module.network, module.public_ip]
 }
 
 
@@ -35,7 +35,7 @@ module "public_ip" {
   version = "~> 2.0"
 
   name                = local.public_ip_name
-  resource_group_name = local.resource_group_name
+  resource_group_name = module.resource_group.name
   location            = var.location
   allocation_method   = "Static"
   sku                 = "Standard"
@@ -49,7 +49,7 @@ module "network" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/virtual_network/azurerm"
   version = "~> 3.2"
 
-  resource_group_name = local.resource_group_name
+  resource_group_name = module.resource_group.name
   vnet_name           = local.virtual_network_name
   vnet_location       = var.location
   address_space       = ["172.16.0.0/16"]

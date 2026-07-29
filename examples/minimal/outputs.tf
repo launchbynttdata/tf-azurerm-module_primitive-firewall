@@ -19,7 +19,7 @@ output "firewall_name" {
 }
 
 output "resource_group_name" {
-  value = module.resource_group.name
+  value = local.resource_group
 }
 
 output "firewall_ip_configuration" {

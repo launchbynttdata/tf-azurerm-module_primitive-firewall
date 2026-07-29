@@ -15,23 +15,29 @@ variable "resource_names_map" {
   type = map(object({
     name       = string
     max_length = optional(number, 60)
+    region     = optional(string, "centralus")
   }))
 
   default = {
     resource_group = {
-      name = "rg"
+      name   = "rg"
+      region = "centralus"
     }
     firewall = {
-      name = "fw"
+      name   = "fw"
+      region = "centralus"
     }
     firewall_policy = {
-      name = "fwpolicy"
+      name   = "fwpolicy"
+      region = "centralus"
     }
     virtual_network = {
-      name = "vnet"
+      name   = "vnet"
+      region = "centralus"
     }
     public_ip = {
-      name = "ip"
+      name   = "ip"
+      region = "centralus"
     }
   }
 }
@@ -103,7 +109,12 @@ variable "class_env" {
 }
 
 variable "location" {
-  description = "Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
+  description = "Azure region to use."
+  type        = string
+}
+
+variable "location_short" {
+  description = "Short string for Azure location."
   type        = string
 }
 

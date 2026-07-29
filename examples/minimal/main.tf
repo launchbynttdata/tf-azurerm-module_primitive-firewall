@@ -14,9 +14,11 @@ module "resource_group" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/resource_group/azurerm"
   version = "~> 1.0"
 
-  name     = local.resource_group_name
+  name     = local.resource_group
   location = var.location
-  tags     = local.tags
+  tags = {
+    resource_name = local.resource_group
+  }
 }
 
 module "resource_names" {
@@ -25,7 +27,7 @@ module "resource_names" {
 
   for_each = var.resource_names_map
 
-  region                  = join("", split("-", var.location))
+  region                  = join("", split("-", each.value.region))
   class_env               = var.class_env
   cloud_resource_type     = each.value.name
   instance_env            = var.instance_env
@@ -40,10 +42,10 @@ module "firewall_policy" {
   version = "~> 1.0"
 
   name                = local.firewall_policy_name
-  resource_group_name = module.resource_group.name
-  location            = var.location
+  resource_group_name = local.resource_group
+  location            = var.location_short
 
-  depends_on = [module.resource_group]
+  depends_on = [module.resource_group, module.network]
 }
 
 module "public_ip" {
@@ -51,7 +53,7 @@ module "public_ip" {
   version = "~> 2.0"
 
   name                = local.public_ip_name
-  resource_group_name = module.resource_group.name
+  resource_group_name = local.resource_group
   location            = var.location
   allocation_method   = "Static"
   sku                 = "Standard"
@@ -65,7 +67,7 @@ module "network" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/virtual_network/azurerm"
   version = "~> 3.2"
 
-  resource_group_name = module.resource_group.name
+  resource_group_name = local.resource_group
   vnet_name           = local.virtual_network_name
   vnet_location       = var.location
   address_space       = var.address_space
@@ -84,7 +86,7 @@ module "firewall" {
   source = "../.."
 
   name                = local.firewall_name
-  resource_group_name = module.resource_group.name
+  resource_group_name = local.resource_group
   location            = var.location
   sku_tier            = var.sku_tier
   firewall_policy_id  = module.firewall_policy.id

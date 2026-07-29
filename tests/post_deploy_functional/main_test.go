@@ -34,7 +34,7 @@ func TestFirewallModule(t *testing.T) {
 		SetTestConfigFileName(infraTFVarFileNameDefault).
 		SetTestSpecificFlags(map[string]types.TestFlags{
 			"minimal": {
-				"IS_TERRAFORM_IDEMPOTENT_APPLY": false,
+				"IS_TERRAFORM_IDEMPOTENT_APPLY": true,
 			},
 		}).
 		Build()

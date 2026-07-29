@@ -10,25 +10,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-module "firewall" {
-  source = "../.."
+module "resource_group" {
+  source  = "terraform.registry.launch.nttdata.com/module_primitive/resource_group/azurerm"
+  version = "~> 1.0"
 
-  name                = local.firewall_name
-  resource_group_name = module.resource_group.name
-
+  name     = local.resource_group_name
   location = var.location
-  sku_tier = "Standard"
-  ip_configuration = [{
-    name                 = "Default"
-    subnet_id            = module.network.subnet_name_id_map["AzureFirewallSubnet"]
-    public_ip_address_id = module.public_ip.id
-  }]
-
-  tags = local.tags
-
-  depends_on = [module.resource_group, module.network, module.public_ip]
+  tags     = local.tags
 }
 
+module "resource_names" {
+  source  = "terraform.registry.launch.nttdata.com/module_library/resource_name/launch"
+  version = "~> 2.0"
+
+  for_each = var.resource_names_map
+
+  region                  = join("", split("-", var.location))
+  class_env               = var.class_env
+  cloud_resource_type     = each.value.name
+  instance_env            = var.instance_env
+  instance_resource       = var.instance_resource
+  maximum_length          = each.value.max_length
+  logical_product_family  = var.logical_product_family
+  logical_product_service = var.logical_product_service
+}
+
+module "firewall_policy" {
+  source  = "terraform.registry.launch.nttdata.com/module_primitive/firewall_policy/azurerm"
+  version = "~> 1.0"
+
+  name                = local.firewall_policy_name
+  resource_group_name = module.resource_group.name
+  location            = var.location
+
+  depends_on = [module.resource_group]
+}
 
 module "public_ip" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/public_ip/azurerm"
@@ -52,10 +68,11 @@ module "network" {
   resource_group_name = module.resource_group.name
   vnet_name           = local.virtual_network_name
   vnet_location       = var.location
-  address_space       = ["172.16.0.0/16"]
+  address_space       = var.address_space
 
   subnets = {
-    AzureFirewallSubnet = { prefix = "172.16.0.0/26" }
+    AzureFirewallSubnet           = { prefix = cidrsubnet(var.address_space[0], 10, 0) }
+    AzureFirewallManagementSubnet = { prefix = cidrsubnet(var.address_space[0], 10, 1) }
   }
 
   tags = local.tags
@@ -63,28 +80,28 @@ module "network" {
   depends_on = [module.resource_group]
 }
 
-module "resource_group" {
-  source  = "terraform.registry.launch.nttdata.com/module_primitive/resource_group/azurerm"
-  version = "~> 1.2"
+module "firewall" {
+  source = "../.."
 
-  name     = local.resource_group_name
-  location = var.location
+  name                = local.firewall_name
+  resource_group_name = module.resource_group.name
+  location            = var.location
+  sku_tier            = var.sku_tier
+  firewall_policy_id  = module.firewall_policy.id
+
+  ip_configuration = [{
+    name                 = "Data"
+    subnet_id            = module.network.subnet_name_id_map["AzureFirewallSubnet"]
+    public_ip_address_id = null
+  }]
+
+  management_ip_configuration = {
+    name                 = "Management"
+    subnet_id            = module.network.subnet_name_id_map["AzureFirewallManagementSubnet"]
+    public_ip_address_id = module.public_ip.id
+  }
 
   tags = local.tags
-}
 
-module "resource_names" {
-  source  = "terraform.registry.launch.nttdata.com/module_library/resource_name/launch"
-  version = "~> 2.4"
-
-  for_each = var.resource_names_map
-
-  region                  = join("", split("-", var.location))
-  class_env               = var.class_env
-  cloud_resource_type     = each.value.name
-  instance_env            = var.instance_env
-  instance_resource       = var.instance_resource
-  maximum_length          = each.value.max_length
-  logical_product_family  = var.logical_product_family
-  logical_product_service = var.logical_product_service
+  depends_on = [module.resource_group, module.network, module.firewall_policy, module.public_ip]
 }

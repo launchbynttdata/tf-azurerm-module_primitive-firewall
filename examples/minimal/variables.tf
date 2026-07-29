@@ -24,6 +24,9 @@ variable "resource_names_map" {
     firewall = {
       name = "fw"
     }
+    firewall_policy = {
+      name = "fwpolicy"
+    }
     virtual_network = {
       name = "vnet"
     }
@@ -104,6 +107,17 @@ variable "location" {
   type        = string
 }
 
+variable "address_space" {
+  description = "The address space that is used by the virtual network."
+  type        = list(string)
+  default     = ["10.0.0.0/16"]
+}
+
+variable "sku_tier" {
+  type        = string
+  description = "SKU tier of the Firewall. Possible values are Premium and Standard."
+  default     = "Standard"
+}
 
 variable "tags" {
   description = "A mapping of tags to assign to the resource."

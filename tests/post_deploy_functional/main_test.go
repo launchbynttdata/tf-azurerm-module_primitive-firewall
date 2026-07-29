@@ -38,5 +38,5 @@ func TestFirewallModule(t *testing.T) {
 		}).
 		Build()
 
-	lib.RunSetupTestTeardown(t, *ctx, testimpl.TestFirewall)
+	lib.RunSetupTestTeardown(t, *ctx, testimpl.TestComposableFirewall)
 }

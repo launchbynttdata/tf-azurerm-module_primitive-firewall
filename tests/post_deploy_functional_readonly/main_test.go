@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	testConfigsExamplesFolderDefault = "../../examples"
+	testConfigsExamplesFolderDefault = "../../examples/minimal"
 	infraTFVarFileNameDefault        = "test.tfvars"
 )
 
@@ -38,5 +38,5 @@ func TestFirewallModule(t *testing.T) {
 		}).
 		Build()
 
-	lib.RunNonDestructiveTest(t, *ctx, testimpl.TestFirewall)
+	lib.RunNonDestructiveTest(t, *ctx, testimpl.TestComposableFirewall)
 }
